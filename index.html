@@ -1,17 +1,37 @@
+<?php
+$file = "saved_text.txt";
+
+// عند الإرسال، يتم حفظ النص
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $text = $_POST["user_text"] ?? '';
+    if (!empty($text)) {
+        file_put_contents($file, $text . PHP_EOL, FILE_APPEND | LOCK_EX);
+    }
+}
+
+// قراءة النصوص المحفوظة
+$saved_texts = file_exists($file) ? file_get_contents($file) : "";
+?>
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حفظ النص في ملف</title>
+    <title>حفظ النصوص تلقائيًا</title>
 </head>
 <body>
 
-    <h2>أدخل نصًا ليتم حفظه في ملف:</h2>
-    <form action="save.php" method="post">
+    <h2>أدخل نصًا ليتم حفظه وعرضه تلقائيًا:</h2>
+    <form method="post">
         <textarea name="user_text" rows="5" cols="40" required></textarea><br>
-        <button type="submit">حفظ النص</button>
+        <button type="submit">إرسال</button>
     </form>
+
+    <h3>النصوص المحفوظة:</h3>
+    <div style="border:1px solid #000; padding:10px; width:50%; background-color:#f9f9f9;">
+        <?php echo nl2br(htmlspecialchars($saved_texts)); ?>
+    </div>
 
 </body>
 </html>
